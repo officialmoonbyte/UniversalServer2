@@ -3,10 +3,10 @@ using System;
 using GlobalSettingsFramework;
 using Moonbyte.Net.TcpServer;
 using System.Threading;
-using Moonbyte.IO.Log;
 using System.Linq;
 using System.IO;
 using System.Reflection;
+using Moonbyte.Logging;
 
 namespace UniversalServer.CommandLine
 {

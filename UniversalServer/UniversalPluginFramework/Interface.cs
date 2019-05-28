@@ -10,6 +10,6 @@ namespace Moonbyte.UniversalServer.PluginFramework
     {
         string Name { get; }
         void OnLoad(string PluginSettingsDirectory);
-        void Invoke(string[] RawCommand);
+        void Invoke(ClientContext Client, string[] RawCommand);
     }
 }

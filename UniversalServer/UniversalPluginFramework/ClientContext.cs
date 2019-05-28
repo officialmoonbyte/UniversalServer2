@@ -1,4 +1,5 @@
-﻿using Moonbyte.Security.Encryption;
+﻿using Moonbyte.Logging;
+using Moonbyte.Security.Encryption;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
@@ -22,6 +23,8 @@ namespace Moonbyte.UniversalServer.PluginFramework
         {
             Client.Client.Send(Encoding.UTF8.GetBytes(Value));
         }
+
+        public void Log(string Header, string Value) { ILogger.AddToLog(Header, Value); }
 
     }
 }

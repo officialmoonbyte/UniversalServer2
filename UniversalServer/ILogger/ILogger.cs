@@ -1,8 +1,7 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 
-namespace Moonbyte.IO.Log
+namespace Moonbyte.Logging
 {
     public class ILogger
     {

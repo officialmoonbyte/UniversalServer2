@@ -9,8 +9,6 @@ namespace UniversalTestPlugin
 
         #region Vars
 
-        ClientContext Controller;
-
         string PluginsSettingDirectory;
 
         #endregion
@@ -26,9 +24,9 @@ namespace UniversalTestPlugin
 
         #region Invoke
 
-        public void Invoke(string[] RawCommand)
+        public void Invoke(ClientContext Client, string[] RawCommand)
         {
-            Console.WriteLine("TEST");
+            Client.Log("INFO", "LOL");
         }
 
         #endregion Invoke

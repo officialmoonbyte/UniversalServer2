@@ -47,7 +47,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLine\CommandLine.cs" />
-    <Compile Include="Ilogger\ILogger.cs" />
     <Compile Include="PluginLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -58,10 +57,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ILogger\ILogger.csproj">
+      <Project>{168b9cb6-b889-4529-9d4d-dd68d2d14546}</Project>
+      <Name>ILogger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UniversalPluginFramework\UniversalPluginFramework.csproj">
       <Project>{ac36aba4-b63b-4e27-bab8-9f3d6f06d509}</Project>
       <Name>UniversalPluginFramework</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

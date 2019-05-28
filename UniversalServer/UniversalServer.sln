@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalPluginFramework", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniversalTestPlugin", "UniversalTestPlugin\UniversalTestPlugin.csproj", "{7DA413CD-5FE5-4854-A2FF-7B7BA15A4CCD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILogger", "ILogger\ILogger.csproj", "{168B9CB6-B889-4529-9D4D-DD68D2D14546}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7DA413CD-5FE5-4854-A2FF-7B7BA15A4CCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DA413CD-5FE5-4854-A2FF-7B7BA15A4CCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DA413CD-5FE5-4854-A2FF-7B7BA15A4CCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{168B9CB6-B889-4529-9D4D-DD68D2D14546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{168B9CB6-B889-4529-9D4D-DD68D2D14546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{168B9CB6-B889-4529-9D4D-DD68D2D14546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{168B9CB6-B889-4529-9D4D-DD68D2D14546}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

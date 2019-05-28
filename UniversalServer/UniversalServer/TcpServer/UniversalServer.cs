@@ -1,5 +1,5 @@
 ﻿using GlobalSettingsFramework;
-using Moonbyte.IO.Log;
+using Moonbyte.Logging;
 using Moonbyte.Security.Encryption;
 using Moonbyte.UniversalServer.PluginFramework;
 using System;
@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Text;
 using UniversalServer.IUser;
 using static Moonbyte.UniversalServer.PluginLoader;
@@ -143,7 +142,7 @@ namespace Moonbyte.Net.TcpServer
 
                         foreach(UniversalPluginFramework plugin in LoadedPlugins)
                         {
-                            if (plugin.Name == rCommandArgs[0]) { plugin.Invoke(rCommandArgs); SentCommand = true; }
+                            if (plugin.Name == rCommandArgs[0]) { plugin.Invoke(context, rCommandArgs); SentCommand = true; }
                         }
                         if (SentCommand == false) { context.SendMessage("Unknown Command."); }
 
