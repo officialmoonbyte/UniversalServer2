@@ -11,6 +11,7 @@ namespace UniversalServer.IUser
         #region Vars
 
         string clientID;
+        string ClientIP;
 
         #region Directories
 
@@ -23,6 +24,7 @@ namespace UniversalServer.IUser
         private string ThisUserDirectory;
         private string LoginLogDirectory;
         private string DisconnectLogDirectory;
+        string SettingDirectory;
         private string LogIPDirectory;
         private string LogCommandDirectory;
 
@@ -70,6 +72,28 @@ namespace UniversalServer.IUser
 
         #endregion LogCommand
 
+        #region Log Setting
+
+        public void LogSetting(string SettingName, string SettingValue)
+        {
+            string settingDirectoryValue = SettingDirectory + @"\" + SettingName + ".dat";
+            string logEvent = DateTime.Now.ToString() + Seperator + ClientIP + Seperator + SettingValue;
+
+            if (File.Exists(settingDirectoryValue))
+            {
+                List<string> values = File.ReadAllLines(settingDirectoryValue).ToList();
+                values.Add(logEvent);
+                File.WriteAllLines(settingDirectoryValue, values);
+            }
+            else
+            {
+                File.Create(settingDirectoryValue).Close(); ;
+                File.WriteAllText(settingDirectoryValue, logEvent);
+            }
+        }
+
+        #endregion Log Setting
+
         #region Disconnect
 
         public void LogClientDisconnect(string IP)
@@ -83,6 +107,7 @@ namespace UniversalServer.IUser
 
         public void LogIP(string IP)
         {
+            ClientIP = IP;
             if (File.Exists(LogIPDirectory))
             {
                 List<string> IPs = File.ReadAllLines(LogIPDirectory).ToList();
@@ -120,6 +145,7 @@ namespace UniversalServer.IUser
             ThisUserDirectory = UserDirectories + @"\" + clientID;
             LoginLogDirectory = ThisUserDirectory + @"\Logins";
             DisconnectLogDirectory = ThisUserDirectory + @"\Disconnects\";
+            SettingDirectory = ThisUserDirectory + @"\Settings";
             LogCommandDirectory = ThisUserDirectory + @"\Commands";
             LogIPDirectory = ThisUserDirectory + @"\Known ID";
 
@@ -127,6 +153,7 @@ namespace UniversalServer.IUser
             if (!Directory.Exists(LoginLogDirectory)) Directory.CreateDirectory(LoginLogDirectory);
             if (!Directory.Exists(DisconnectLogDirectory)) Directory.CreateDirectory(DisconnectLogDirectory);
             if (!Directory.Exists(LogCommandDirectory)) Directory.CreateDirectory(LogCommandDirectory);
+            if (!Directory.Exists(SettingDirectory)) Directory.CreateDirectory(SettingDirectory);
             if (!Directory.Exists(LogIPDirectory)) Directory.CreateDirectory(LogIPDirectory);
 
             LoginLogDirectory += @"\Logins.log";
