@@ -37,6 +37,8 @@ namespace UniversalServer.CommandLine
             settingsFramework = new GFS(Environment.CurrentDirectory + @"\" + "UniversalSettings.dll");
             ILogger.SetLoggingEvents();
 
+            CheckForSystemUpdate();
+
             string oldSettingValue = settingsFramework.ReadSetting(_servers);
             if (oldSettingValue != null)
             {
@@ -74,38 +76,42 @@ namespace UniversalServer.CommandLine
         #endregion GetLocalIP
         private void CheckForSystemUpdate()
         {
-            new Thread(new ThreadStart(() =>
-            {
-                MoonbyteServerConnection = new UniversalClient();
+            MoonbyteServerConnection = new UniversalClient(false);
 
+            if (!settingsFramework.CheckSetting("UPDATEP"))
+            { settingsFramework.EditSetting("UPDATEP", true.ToString()); }
+
+            if (settingsFramework.ReadSetting("UPDATEP") == true.ToString())
+            {
                 string IP = "moonbyte.us";
                 string externalip = new WebClient().DownloadString("http://icanhazip.com");
 
-                if (externalip == Dns.GetHostAddresses(new Uri(IP).Host)[0].ToString()) { IP = "192.168.0.16"; }
-                if (IP == GetLocalIPAddress()) { IP = "127.0.0.1"; }
+                if (externalip.Contains(Dns.GetHostAddresses(new Uri("http://moonbyte.us").Host)[0].ToString())) { IP = "192.168.0.16"; }
                 MoonbyteServerConnection.ConnectToRemoteServer(IP, 7777);
-
-                string UPFCurrentVersion = MoonbyteServerConnection.SendCommand("dyn", new string[] { "GetVersion", "UniversalPluginFramework"});
-                string UCCurrentVersion = MoonbyteServerConnection.SendCommand("dyn", new string[] { "GetVersion", "UniversalClient" });
 
                 AssemblyFileVersionAttribute UPFVersion = typeof(UniversalPluginFramework).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
                 AssemblyFileVersionAttribute UCVersion = typeof(UniversalClient).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
 
-                if (UPFCurrentVersion == UPFVersion.Version) { ILogger.AddToLog("INFO", "UniversalPluginFramework is up to date! You currently have version " + UPFCurrentVersion); }
-                else
-                {
-                    ILogger.AddToLog("WARN", "UniversalPluginFramework is out of date! You currently have version " + UPFVersion.Version);
-                    ILogger.AddToLog("WARN", "Current version for UniversalPluginFramework is " + UPFCurrentVersion);
-                }
+                string CurrentVersion = MoonbyteServerConnection.SendCommand("dyn", new string[] { "GetVersion", "UniversalServer" });
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                string Version = FileVersionInfo.GetVersionInfo(assembly.Location).ProductVersion;
 
-                if (UCCurrentVersion == UCVersion.Version) { ILogger.AddToLog("INFO", "UniversalClient is current up to date! You currently have version " + UCCurrentVersion); }
+                if (Version != CurrentVersion)
+                {
+                    ILogger.AddToLog("WARN", "Universal Server is currently out of date! Current version installed : " + Version);
+                    ILogger.AddToLog("WARN", "With UniversalServer not updated, some plugins and features may not work correctly.");
+                    ILogger.AddToLog("WARN", "Please install the updated version " + CurrentVersion);
+                }
                 else
                 {
-                    ILogger.AddToLog("WARN", "UniversalClient is out of date! You currently have version " + UPFVersion.Version);
-                    ILogger.AddToLog("WARN", "Current version for Universal Client is " + UCCurrentVersion);
+                    ILogger.AddToLog("INFO", "Universal Server - Version " + Version + ", is currently up to date!");
                 }
-                
-            })).Start();
+                ILogger.AddWhitespace();
+                ILogger.AddToLog("INFO", "UniversalPluginFramework version " + UPFVersion.Version);
+                ILogger.AddToLog("INFO", "UniversalClient version " + UCVersion.Version);
+                ILogger.AddWhitespace();
+
+            }
         }
 
         #endregion CheckForUpdate
@@ -113,10 +119,7 @@ namespace UniversalServer.CommandLine
         #region CommandLine
 
         private void commandLine()
-        {
-            ILogger.AddToLog("INFO", "Universal Server Version " + Assembly.GetExecutingAssembly().GetName().Version);
-            ILogger.AddToLog("INFO", "this build is still in alpha, please report bugs at corporate@moonbyte.net");
-            ILogger.AddWhitespace();
+        { 
             ILogger.AddToLog("INFO", "Type Help for a list of commands..");
 
             while (true)

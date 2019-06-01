@@ -14,6 +14,7 @@ namespace Moonbyte.UniversalClient
         #region Vars
 
         private TcpClient Client;
+        public static bool LogEvents;
         RSA Encryption = new RSA();
         public bool IsConnected
         {
@@ -25,8 +26,9 @@ namespace Moonbyte.UniversalClient
 
         #region Initialization
 
-        public UniversalClient()
+        public UniversalClient(bool logEvents)
         {
+            LogEvents = logEvents;
             Client = new TcpClient();
         }
 
@@ -69,7 +71,7 @@ namespace Moonbyte.UniversalClient
             byte[] data = new byte[Client.Client.ReceiveBufferSize];
             int receivedDataLength = Client.Client.Receive(data);
             string stringData = Encoding.ASCII.GetString(data, 0, receivedDataLength);
-            Console.WriteLine("Server response: " + stringData);
+            if (LogEvents)Console.WriteLine("Server response: " + stringData);
             string Final = stringData.Replace("%20%", " ");
             //if (UseEncryption)
            // {
@@ -91,7 +93,7 @@ namespace Moonbyte.UniversalClient
                 args[i] = args[i].Replace(" ", "%40%");
             }
             string ArgsSend = string.Join(" ", args);
-            Console.WriteLine("Args Send : " + ArgsSend);
+            if (LogEvents) Console.WriteLine("Args Send : " + ArgsSend);
             string valueToSend = "CLNT|" + Command + " " + ArgsSend;
             SendMessage(valueToSend);
             return WaitForResult();
@@ -110,7 +112,7 @@ namespace Moonbyte.UniversalClient
                 if (Key == null) { stringToSend = Encryption.Encrypt(stringToSend, Encryption.GetClientPrivateKey()); }
                 else { stringToSend = Encryption.Encrypt(stringToSend, Key); }
             }
-            Console.WriteLine("Sending " + stringToSend);
+            if (LogEvents) Console.WriteLine("Sending " + stringToSend);
             byte[] BytesToSend = Encoding.UTF8.GetBytes(stringToSend);
             Client.Client.BeginSend(BytesToSend, 0, BytesToSend.Length, 0, new AsyncCallback(SendCallBack), Client);
         }
@@ -123,11 +125,11 @@ namespace Moonbyte.UniversalClient
         {
             if (ar.IsCompleted)
             {
-                Console.WriteLine("Data sent sucessfully!");
+                if (LogEvents) Console.WriteLine("Data sent sucessfully!");
             }
             else
             {
-                Console.WriteLine("Data was not sucessfully!");
+                if (LogEvents) Console.WriteLine("Data was not sucessfully!");
             }
         }
 
