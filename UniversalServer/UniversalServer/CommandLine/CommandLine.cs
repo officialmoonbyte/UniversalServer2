@@ -9,6 +9,9 @@ using System.Reflection;
 using Moonbyte.Logging;
 using Moonbyte.UniversalClient;
 using System.Net;
+using System.Diagnostics;
+using Moonbyte.UniversalServer.PluginFramework;
+using System.Net.Sockets;
 
 namespace UniversalServer.CommandLine
 {
@@ -53,6 +56,22 @@ namespace UniversalServer.CommandLine
 
         #region CheckForUpdate
 
+        #region GetLocalIP
+
+        private string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No network adapters with an IPv4 address in the system!");
+        }
+
+        #endregion GetLocalIP
         private void CheckForSystemUpdate()
         {
             new Thread(new ThreadStart(() =>
@@ -63,9 +82,29 @@ namespace UniversalServer.CommandLine
                 string externalip = new WebClient().DownloadString("http://icanhazip.com");
 
                 if (externalip == Dns.GetHostAddresses(new Uri(IP).Host)[0].ToString()) { IP = "192.168.0.16"; }
+                if (IP == GetLocalIPAddress()) { IP = "127.0.0.1"; }
                 MoonbyteServerConnection.ConnectToRemoteServer(IP, 7777);
 
                 string UPFCurrentVersion = MoonbyteServerConnection.SendCommand("dyn", new string[] { "GetVersion", "UniversalPluginFramework"});
+                string UCCurrentVersion = MoonbyteServerConnection.SendCommand("dyn", new string[] { "GetVersion", "UniversalClient" });
+
+                AssemblyFileVersionAttribute UPFVersion = typeof(UniversalPluginFramework).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
+                AssemblyFileVersionAttribute UCVersion = typeof(UniversalClient).GetTypeInfo().Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
+
+                if (UPFCurrentVersion == UPFVersion.Version) { ILogger.AddToLog("INFO", "UniversalPluginFramework is up to date! You currently have version " + UPFCurrentVersion); }
+                else
+                {
+                    ILogger.AddToLog("WARN", "UniversalPluginFramework is out of date! You currently have version " + UPFVersion.Version);
+                    ILogger.AddToLog("WARN", "Current version for UniversalPluginFramework is " + UPFCurrentVersion);
+                }
+
+                if (UCCurrentVersion == UCVersion.Version) { ILogger.AddToLog("INFO", "UniversalClient is current up to date! You currently have version " + UCCurrentVersion); }
+                else
+                {
+                    ILogger.AddToLog("WARN", "UniversalClient is out of date! You currently have version " + UPFVersion.Version);
+                    ILogger.AddToLog("WARN", "Current version for Universal Client is " + UCCurrentVersion);
+                }
+                
             })).Start();
         }
 
