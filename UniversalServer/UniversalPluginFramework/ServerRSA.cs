@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Moonbyte.Security.Encryption
 {
-    public class RSA
+    public class ServerRSA
     {
 
         #region Vars
@@ -20,7 +20,7 @@ namespace Moonbyte.Security.Encryption
 
         #region Initialization
 
-        public RSA(bool isServer = false)
+        public ServerRSA(bool isServer = false)
         {
             RSACryptoServiceProvider EncryptionServiceProvider = new RSACryptoServiceProvider(1024);
 

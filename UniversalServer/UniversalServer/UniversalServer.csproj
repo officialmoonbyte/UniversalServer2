@@ -44,6 +44,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="UniversalClient, Version=4.3.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UniversalClient.4.3.4\lib\net45\UniversalClient.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLine\CommandLine.cs" />

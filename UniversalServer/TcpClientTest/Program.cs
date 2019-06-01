@@ -13,7 +13,7 @@ namespace TcpClientTest
             client.ConnectToRemoteServer("127.0.0.1", 7777);
             Console.WriteLine("Connected to a local universal server on port 7777");
             Thread.Sleep(3);
-            client.SendCommand("UniversalTestPlugin", new string[] { "Comm1", "Comm2", "Comm3" });
+            client.SendCommand("dyn", new string[] { "GetVersion", "UniversalPluginFramework", "1.1.0", "123", "corporate@moonbyte.net" });
             string s = client.WaitForResult();
             Console.WriteLine(s);
         }

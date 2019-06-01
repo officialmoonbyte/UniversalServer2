@@ -214,7 +214,7 @@ namespace Moonbyte.Net.TcpServer
             try
             {
                 ClientContext context = new ClientContext();
-                context.Encryption = new RSA(true);
+                context.Encryption = new ServerRSA(true);
                 context.clientTracker = new ClientTracker(this.ServerName);
                 context.Client = listener.EndAcceptTcpClient(ar);
                 context.Stream = context.Client.GetStream();

@@ -14,7 +14,7 @@ namespace Moonbyte.UniversalServer.PluginFramework
         public TcpClient Client;
         public StringBuilder sb;
         public Stream Stream;
-        public RSA Encryption;
+        public ServerRSA Encryption;
         public ClientTracker clientTracker;
         public byte[] Buffer = new byte[65525];
         public MemoryStream Message = new MemoryStream();

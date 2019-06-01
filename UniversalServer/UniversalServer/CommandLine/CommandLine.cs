@@ -7,6 +7,8 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 using Moonbyte.Logging;
+using Moonbyte.UniversalClient;
+using System.Net;
 
 namespace UniversalServer.CommandLine
 {
@@ -17,6 +19,8 @@ namespace UniversalServer.CommandLine
 
         List<UniversalServerObject> servers = new List<UniversalServerObject>();
         GFS settingsFramework;
+
+        UniversalClient MoonbyteServerConnection;
 
         string seperator = "|%40%|";
         string _servers = "SERVERS";
@@ -46,6 +50,26 @@ namespace UniversalServer.CommandLine
         }
 
         #endregion Initialization
+
+        #region CheckForUpdate
+
+        private void CheckForSystemUpdate()
+        {
+            new Thread(new ThreadStart(() =>
+            {
+                MoonbyteServerConnection = new UniversalClient();
+
+                string IP = "moonbyte.us";
+                string externalip = new WebClient().DownloadString("http://icanhazip.com");
+
+                if (externalip == Dns.GetHostAddresses(new Uri(IP).Host)[0].ToString()) { IP = "192.168.0.16"; }
+                MoonbyteServerConnection.ConnectToRemoteServer(IP, 7777);
+
+                string UPFCurrentVersion = MoonbyteServerConnection.SendCommand("dyn", new string[] { "GetVersion", "UniversalPluginFramework"});
+            })).Start();
+        }
+
+        #endregion CheckForUpdate
 
         #region CommandLine
 
