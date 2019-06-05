@@ -27,6 +27,7 @@ namespace UniversalServer.IUser
         string SettingDirectory;
         private string LogIPDirectory;
         private string LogCommandDirectory;
+        private string ThisUserPluginValueDirectory;
 
         #endregion Directories
 
@@ -138,6 +139,45 @@ namespace UniversalServer.IUser
 
         #endregion EditValue
 
+        #region CheckPluginValue
+
+        public bool CheckPluginValue(string PluginName, string ValueTitle)
+        {
+            string ValueDirectoryLocation = ThisUserPluginValueDirectory + @"\" + PluginName + @"\" + ValueTitle;
+
+            if (File.Exists(ValueDirectoryLocation)) { return true; } else { return false; }
+        }
+
+        #endregion CheckPluginValue
+
+        #region GetPluginValue
+
+        public string GetPluginValue(string PluginName, string ValueTitle)
+        {
+            string ValueFileLocation = ThisUserPluginValueDirectory + @"\" + PluginName + @"\" + ValueTitle;
+            
+            if (File.Exists(ValueFileLocation))
+            {
+                return File.ReadAllText(ValueFileLocation);
+            }
+            else { return false.ToString(); }
+        }
+
+        #endregion GetPluginValue
+
+        #region EditPluginValue
+
+        public void EditPluginValue(string PluginName, string ValueTitle, string Value)
+        {
+            string ValueFileLocation = ThisUserPluginValueDirectory + @"\" + PluginName + @"\" + ValueTitle;
+
+            if (!File.Exists(ValueFileLocation)) { File.Create(ValueFileLocation).Close(); }
+
+            File.WriteAllText(ValueFileLocation, Value);
+        }
+
+        #endregion EditPluginValue
+
         #region UpdateClient
 
         private void UpdateClient()
@@ -148,6 +188,7 @@ namespace UniversalServer.IUser
             SettingDirectory = ThisUserDirectory + @"\Settings";
             LogCommandDirectory = ThisUserDirectory + @"\Commands";
             LogIPDirectory = ThisUserDirectory + @"\Known ID";
+            ThisUserPluginValueDirectory = ThisUserDirectory + @"\Plugin Values";
 
             if (!Directory.Exists(ThisUserDirectory)) Directory.CreateDirectory(ThisUserDirectory);
             if (!Directory.Exists(LoginLogDirectory)) Directory.CreateDirectory(LoginLogDirectory);
