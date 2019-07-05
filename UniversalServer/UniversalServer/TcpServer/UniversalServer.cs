@@ -247,6 +247,7 @@ namespace Moonbyte.Net.TcpServer
             string[] CommandArgs = Command.Split(' ');
             if (CommandArgs[0].ToUpper() == "SETID") { context.clientTracker.ClientID = CommandArgs[1]; context.SendMessage("SetID Complete"); }
             else if (CommandArgs[0].ToUpper() == "LOGIN") { context.clientTracker.AddLoginEvent(context.ClientIP); context.SendMessage("Login Complete"); }
+            else if (CommandArgs[0].ToUpper() == "LOGFILE") { context.clientTracker.SaveLogFile(CommandArgs[1], CommandArgs[2]); context.SendMessage("LogFile Complete"); }
         }
 
         #endregion User

@@ -64,6 +64,13 @@ namespace Moonbyte.UniversalClient
 
         #endregion ConnectToRemoteServer
 
+        #region SaveLogFile
+
+        public void SendLogFileToServer(string ApplicationName, string LogContent)
+        { SendMessage("USER|LOGFILE " + ApplicationName + " " + LogContent); WaitForResult(); }
+
+        #endregion SaveLogFile
+
         #region WaitForResult
 
         public string WaitForResult()

@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Moonbyte.Logging;
 
 namespace UniversalServer.IUser
 {
@@ -26,6 +27,7 @@ namespace UniversalServer.IUser
         private string DisconnectLogDirectory;
         string SettingDirectory;
         private string LogIPDirectory;
+        private string UserLogDirectory;
         private string LogCommandDirectory;
         private string ThisUserPluginValueDirectory;
 
@@ -64,6 +66,36 @@ namespace UniversalServer.IUser
 
         #endregion Login
 
+        #region SaveLogFile
+
+        public void SaveLogFile(string ApplicationName, string Log)
+        {
+            try
+            {
+                //Get's the application log directory
+                string AD = Path.Combine(UserLogDirectory, ApplicationName);
+                int fileCount = Directory.GetFiles(AD).Length;
+                string NewApplicationLogFile = Path.Combine(AD, "Log " + fileCount + ".log");
+
+                //Delete's the log file if it exist's
+                if (File.Exists(NewApplicationLogFile)) { ILogger.AddToLog("WARN", "Application log already exist's! Deleting the current one."); File.Delete(NewApplicationLogFile); }
+
+                //Creates a new log file
+                File.Create(NewApplicationLogFile).Close();
+
+                //Writes log file content
+                File.WriteAllText(NewApplicationLogFile, Log);
+
+            }
+            catch (Exception e)
+            {
+                ILogger.AddToLog("ClientTracker", "Error while ClientTracker was trying to log a setting! " + e.Message);
+                ILogger.AddToLog("ClientTracker", e.StackTrace);
+            }
+        }
+
+        #endregion SaveLogFile
+
         #region LogCommand
 
         public void LogClientCommand(string FullCommand, string IP)
@@ -77,19 +109,27 @@ namespace UniversalServer.IUser
 
         public void LogSetting(string SettingName, string SettingValue)
         {
-            string settingDirectoryValue = SettingDirectory + @"\" + SettingName + ".dat";
-            string logEvent = DateTime.Now.ToString() + Seperator + ClientIP + Seperator + SettingValue;
+            try
+            {
+                string settingDirectoryValue = SettingDirectory + @"\" + SettingName + ".dat";
+                string logEvent = DateTime.Now.ToString() + Seperator + ClientIP + Seperator + SettingValue;
 
-            if (File.Exists(settingDirectoryValue))
-            {
-                List<string> values = File.ReadAllLines(settingDirectoryValue).ToList();
-                values.Add(logEvent);
-                File.WriteAllLines(settingDirectoryValue, values);
+                if (File.Exists(settingDirectoryValue))
+                {
+                    List<string> values = File.ReadAllLines(settingDirectoryValue).ToList();
+                    values.Add(logEvent);
+                    File.WriteAllLines(settingDirectoryValue, values);
+                }
+                else
+                {
+                    File.Create(settingDirectoryValue).Close(); ;
+                    File.WriteAllText(settingDirectoryValue, logEvent);
+                }
             }
-            else
+            catch (Exception e)
             {
-                File.Create(settingDirectoryValue).Close(); ;
-                File.WriteAllText(settingDirectoryValue, logEvent);
+                ILogger.AddToLog("ClientTracker", "Error while ClientTracker was trying to log a setting! " + e.Message);
+                ILogger.AddToLog("ClientTracker", e.StackTrace);
             }
         }
 
@@ -108,20 +148,28 @@ namespace UniversalServer.IUser
 
         public void LogIP(string IP)
         {
-            ClientIP = IP;
-            if (File.Exists(LogIPDirectory))
+            try
             {
-                List<string> IPs = File.ReadAllLines(LogIPDirectory).ToList();
-                bool addToList = true;
-                foreach(string s in IPs)
-                { if (s == IP) { addToList = false; } }
-                if (addToList) IPs.Add(IP);
-                File.WriteAllLines(LogIPDirectory, IPs);
+                ClientIP = IP;
+                if (File.Exists(LogIPDirectory))
+                {
+                    List<string> IPs = File.ReadAllLines(LogIPDirectory).ToList();
+                    bool addToList = true;
+                    foreach (string s in IPs)
+                    { if (s == IP) { addToList = false; } }
+                    if (addToList) IPs.Add(IP);
+                    File.WriteAllLines(LogIPDirectory, IPs);
+                }
+                else
+                {
+                    File.Create(LogIPDirectory).Close();
+                    File.WriteAllText(LogIPDirectory, IP);
+                }
             }
-            else
+            catch (Exception e)
             {
-                File.Create(LogIPDirectory).Close();
-                File.WriteAllText(LogIPDirectory, IP);
+                ILogger.AddToLog("ClientTracker", "Error while ClientTracker was trying to log a new ip! " + e.Message);
+                ILogger.AddToLog("ClientTracker", e.StackTrace);
             }
         }
 
@@ -131,10 +179,19 @@ namespace UniversalServer.IUser
 
         private void EditValue(string Value, string FileDirectory)
         {
-            if (File.Exists(FileDirectory))
+            try
             {
-                File.WriteAllText(FileDirectory, Value + "\n" + File.ReadAllText(FileDirectory));
-            } else { File.Create(FileDirectory).Close(); File.WriteAllText(FileDirectory, Value); }
+                if (File.Exists(FileDirectory))
+                {
+                    File.WriteAllText(FileDirectory, Value + "\n" + File.ReadAllText(FileDirectory));
+                }
+                else { File.Create(FileDirectory).Close(); File.WriteAllText(FileDirectory, Value); }
+            }
+            catch (Exception e)
+            {
+                ILogger.AddToLog("ClientTracker", "Error while ClientTracker was trying to edit a file value! " + e.Message);
+                ILogger.AddToLog("ClientTracker", e.StackTrace);
+            }
         }
 
         #endregion EditValue
@@ -169,11 +226,19 @@ namespace UniversalServer.IUser
 
         public void EditPluginValue(string PluginName, string ValueTitle, string Value)
         {
-            string ValueFileLocation = ThisUserPluginValueDirectory + @"\" + PluginName + @"\" + ValueTitle;
+            try
+            {
+                string ValueFileLocation = ThisUserPluginValueDirectory + @"\" + PluginName + @"\" + ValueTitle;
 
-            if (!File.Exists(ValueFileLocation)) { File.Create(ValueFileLocation).Close(); }
+                if (!File.Exists(ValueFileLocation)) { File.Create(ValueFileLocation).Close(); }
 
-            File.WriteAllText(ValueFileLocation, Value);
+                File.WriteAllText(ValueFileLocation, Value);
+            }
+            catch (Exception e)
+            {
+                ILogger.AddToLog("ClientTracker", "Error while ClientTracker was trying to edit a plugin value! " + e.Message);
+                ILogger.AddToLog("ClientTracker", e.StackTrace);
+            }
         }
 
         #endregion EditPluginValue
@@ -187,6 +252,7 @@ namespace UniversalServer.IUser
             DisconnectLogDirectory = ThisUserDirectory + @"\Disconnects\";
             SettingDirectory = ThisUserDirectory + @"\Settings";
             LogCommandDirectory = ThisUserDirectory + @"\Commands";
+            UserLogDirectory = ThisUserDirectory + @"\UserLogs";
             LogIPDirectory = ThisUserDirectory + @"\Known ID";
             ThisUserPluginValueDirectory = ThisUserDirectory + @"\Plugin Values";
 
@@ -195,6 +261,7 @@ namespace UniversalServer.IUser
             if (!Directory.Exists(DisconnectLogDirectory)) Directory.CreateDirectory(DisconnectLogDirectory);
             if (!Directory.Exists(LogCommandDirectory)) Directory.CreateDirectory(LogCommandDirectory);
             if (!Directory.Exists(SettingDirectory)) Directory.CreateDirectory(SettingDirectory);
+            if (!Directory.Exists(UserLogDirectory)) Directory.CreateDirectory(UserLogDirectory);
             if (!Directory.Exists(LogIPDirectory)) Directory.CreateDirectory(LogIPDirectory);
 
             LoginLogDirectory += @"\Logins.log";
