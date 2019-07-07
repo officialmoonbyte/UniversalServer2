@@ -37,7 +37,7 @@ namespace UniversalServer.CommandLine
             settingsFramework = new GFS(Environment.CurrentDirectory + @"\" + "UniversalSettings.dll");
             ILogger.SetLoggingEvents();
 
-            CheckForSystemUpdate();
+            //CheckForSystemUpdate();
 
             string oldSettingValue = settingsFramework.ReadSetting(_servers);
             if (oldSettingValue != null)
