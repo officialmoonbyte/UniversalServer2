@@ -66,6 +66,8 @@ namespace Moonbyte.Net.TcpServer
             LoadPlugins();
 
             listener.BeginAcceptTcpClient(OnClientAccepted, listener);
+
+            this.Status = "Online";
         }
 
         #endregion Start
