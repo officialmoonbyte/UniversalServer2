@@ -61,8 +61,6 @@ namespace Moonbyte.Net.TcpServer
             listener = new TcpListener(new IPEndPoint(IPAddress.Any, int.Parse(port)));
             listener.Start();
 
-            ILogger.AddToLog("INFO", this.ServerName + " is listening for clients on port " + port);
-
             LoadPlugins();
 
             listener.BeginAcceptTcpClient(OnClientAccepted, listener);
@@ -77,8 +75,6 @@ namespace Moonbyte.Net.TcpServer
             string[] dllFileNames = null;
             if (Directory.Exists(PluginDirectory)) { dllFileNames = Directory.GetFiles(PluginDirectory, "*.dll"); }
 
-            ILogger.AddToLog("INFO", "Loading " + dllFileNames.Length + " plugins... Please wait.");
-
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
@@ -87,21 +83,9 @@ namespace Moonbyte.Net.TcpServer
             foreach(UniversalPluginFramework plugin in LoadedPlugins)
             { plugin.OnLoad(PluginEditDirectory + @"\" + plugin.Name); }
 
-            ILogger.AddWhitespace();
-            Log("Loaded a total of " + LoadedPlugins.Count + " plugins.");
-
         }
 
         #endregion
-
-        #region Server.Log
-
-        private void Log(string Value)
-        {
-            ILogger.AddToLog("INFO", "(" + ServerName + ") " + Value);
-        }
-
-        #endregion Server.Log
 
         #region OnClientReadBack
 

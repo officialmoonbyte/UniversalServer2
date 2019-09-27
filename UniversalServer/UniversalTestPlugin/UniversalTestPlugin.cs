@@ -4,7 +4,7 @@ using System.IO;
 
 namespace UniversalTestPlugin
 {
-    public class UniversalTestPlugin : UniversalPluginFramework
+    public class UniversalTestPlugin : Moonbyte.UniversalServer.PluginFramework.UniversalPluginFramework
     {
 
         #region Vars

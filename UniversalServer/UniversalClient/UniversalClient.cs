@@ -54,11 +54,11 @@ namespace Moonbyte.UniversalClient
                 var macAddr = ( from nic in NetworkInterface.GetAllNetworkInterfaces()
                         where nic.OperationalStatus == OperationalStatus.Up
                         select nic.GetPhysicalAddress().ToString()).FirstOrDefault();
-
+                Console.WriteLine("test1");
                 SendMessage("USER|SETID " + macAddr);
-                WaitForResult();
+                WaitForResult(); Console.WriteLine("test2");
                 SendMessage("USER|LOGIN");
-                WaitForResult();
+                WaitForResult(); Console.WriteLine("test3");
             }
         }
 
@@ -102,7 +102,7 @@ namespace Moonbyte.UniversalClient
             string ArgsSend = string.Join(" ", args);
             if (LogEvents) Console.WriteLine("Args Send : " + ArgsSend);
             string valueToSend = "CLNT|" + Command + " " + ArgsSend;
-            SendMessage(valueToSend);
+            SendMessage(valueToSend); Console.WriteLine("test1");
             return WaitForResult();
         }
 
