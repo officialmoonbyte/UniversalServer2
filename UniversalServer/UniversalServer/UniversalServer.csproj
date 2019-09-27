@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLine\CommandLine.cs" />
+    <Compile Include="CommandProcessing\CommandProcessing.cs" />
     <Compile Include="PluginLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

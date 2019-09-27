@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientStorage.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="ClientContext.cs" />
     <Compile Include="ClientTracker.cs" />
