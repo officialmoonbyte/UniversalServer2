@@ -41,8 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsolePlugin.cs" />
-    <Compile Include="ServerPlugin.cs" />
+    <Compile Include="ClientStorage.cs" />
+    <Compile Include="Interface.cs" />
     <Compile Include="ClientContext.cs" />
     <Compile Include="ClientTracker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

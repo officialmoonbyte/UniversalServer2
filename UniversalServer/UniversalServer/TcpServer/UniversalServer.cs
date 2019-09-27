@@ -26,6 +26,7 @@ namespace Moonbyte.Net.TcpServer
         public string ServerName;
         public string PluginDirectory;
         public string PluginEditDirectory;
+        public string ServerStorageDirectory;
         public string Status = "Initializing";
 
         #endregion Vars
@@ -36,12 +37,14 @@ namespace Moonbyte.Net.TcpServer
         {
             ServerDirectory = ServerDirectory + @"\" + Name;
             PluginDirectory = ServerDirectory + @"\Plugins";
+            ServerStorageDirectory = ServerDirectory + @"\UserStorage";
             PluginEditDirectory = ServerDirectory + @"\Plugin Settings";
             if (!Directory.Exists(ServerDirectory)) Directory.CreateDirectory(ServerDirectory);
             ServerDirectory = ServerDirectory + @"\" + "settings.dll";
 
             if (!Directory.Exists(PluginDirectory)) { Directory.CreateDirectory(PluginDirectory); }
             if (!Directory.Exists(PluginEditDirectory)) { Directory.CreateDirectory(PluginEditDirectory); }
+            if (!Directory.Exists(ServerStorageDirectory)) { Directory.CreateDirectory(ServerStorageDirectory); }
 
             ServerName = Name;
             settingsFramework = new GFS(ServerDirectory);
@@ -64,6 +67,8 @@ namespace Moonbyte.Net.TcpServer
             LoadPlugins();
 
             listener.BeginAcceptTcpClient(OnClientAccepted, listener);
+
+            this.Status = "Online";
         }
 
         #endregion Start
@@ -200,6 +205,7 @@ namespace Moonbyte.Net.TcpServer
                 ClientContext context = new ClientContext();
                 context.Encryption = new ServerRSA(true);
                 context.clientTracker = new ClientTracker(this.ServerName);
+                context.clientStorage = new ClientStorage(context.clientTracker, ServerStorageDirectory);
                 context.Client = listener.EndAcceptTcpClient(ar);
                 context.Stream = context.Client.GetStream();
                 context.Stream.BeginRead(context.Buffer, 0, context.Buffer.Length, OnClientRead, context);
